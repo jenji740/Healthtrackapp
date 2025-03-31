@@ -67,7 +67,6 @@ export default function HealthMetricChart({ metric, color }: HealthMetricChartPr
       tension: 0.3,
       fill: true,
       borderWidth: 2,
-      borderDash: [5, 5], // Fixed issue by properly typing dataset
     }
 
     setChartData({

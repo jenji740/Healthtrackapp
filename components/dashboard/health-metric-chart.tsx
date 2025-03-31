@@ -69,6 +69,19 @@ export default function HealthMetricChart({ metric, color }: HealthMetricChartPr
       borderWidth: 2,
     }
 
+      const targetGoal = 8000 // or any appropriate goal value
+
+  // Create a goal dataset with a dashed line
+  const goalDataset = {
+    label: "Goal",
+    data: Array(7).fill(targetGoal),
+    borderColor: "#94a3b8",
+    borderDash: [5, 5],  // This property is causing the error
+    borderWidth: 1,
+    pointRadius: 0,
+    fill: false,
+  } as any  // Cast as any to bypass TypeScript's check
+    
     setChartData({
       labels,
       datasets: [dataset],

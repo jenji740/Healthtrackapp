@@ -12,6 +12,7 @@ import {
   Tooltip,
   Legend,
   Filler,
+  ChartDataset,
 } from "chart.js"
 
 // Register ChartJS components
@@ -58,20 +59,20 @@ export default function HealthMetricChart({ metric, color }: HealthMetricChartPr
   useEffect(() => {
     const { labels, data } = generateMockData(metric)
 
+    const dataset: ChartDataset<"line"> = {
+      label: metric.charAt(0).toUpperCase() + metric.slice(1),
+      data,
+      borderColor: color,
+      backgroundColor: `${color}20`,
+      tension: 0.3,
+      fill: true,
+      borderWidth: 2,
+      borderDash: [5, 5], // Fixed issue by properly typing dataset
+    }
+
     setChartData({
       labels,
-      datasets: [
-        {
-          label: metric.charAt(0).toUpperCase() + metric.slice(1),
-          data: data,
-          borderColor: color,
-          backgroundColor: `${color}20`,
-          tension: 0.3,
-          fill: true,
-          borderWidth: 2, // Ensure visibility
-          // borderDash removed as it is not a valid property
-        },
-      ],
+      datasets: [dataset],
     })
   }, [metric, color])
 

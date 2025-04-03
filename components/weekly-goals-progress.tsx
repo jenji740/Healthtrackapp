@@ -62,7 +62,7 @@ export default function WeeklyGoalsProgress() {
               </span>
             </div>
             <div className="space-y-1">
-              <Progress value={progress} className="h-2" indicatorClassName={goal.color} />
+              <Progress value={progress} className={`h-2 ${goal.color}`} />
               <p className="text-xs text-right text-muted-foreground">{progress}% complete</p>
             </div>
           </div>
@@ -71,4 +71,3 @@ export default function WeeklyGoalsProgress() {
     </div>
   )
 }
-

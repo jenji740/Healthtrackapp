@@ -26,7 +26,7 @@ const generateMockData = (metric: string, goal: number | null) => {
     return date.toLocaleDateString("en-US", { weekday: "short" })
   })
 
-  let data
+  let data: number[]
   switch (metric) {
     case "steps":
       data = [7823, 9102, 8432, 10254, 7654, 9876, 8543]
@@ -65,7 +65,7 @@ export default function HealthMetricChart({ metric, color, goal }: HealthMetricC
     const datasets = [
       {
         label: metric.charAt(0).toUpperCase() + metric.slice(1),
-        data: data,
+        data,
         borderColor: color,
         backgroundColor: `${color}20`,
         tension: 0.3,
@@ -83,7 +83,7 @@ export default function HealthMetricChart({ metric, color, goal }: HealthMetricC
         borderWidth: 1,
         pointRadius: 0,
         fill: false,
-      })
+      } as any)
     }
 
     setChartData({
@@ -128,4 +128,3 @@ export default function HealthMetricChart({ metric, color, goal }: HealthMetricC
 
   return <Line data={chartData} options={options} />
 }
-

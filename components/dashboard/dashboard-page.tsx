@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Heart } from "lucide-react"
@@ -21,6 +21,13 @@ export default function DashboardPage() {
   const userEmail = session?.user?.email || "User"
   const router = useRouter()
 
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!session) {
+      router.push("/login")
+    }
+  }, [session, router])
+
   async function handleLogout() {
     const { error } = await supabase.auth.signOut()
     if (error) {
@@ -31,8 +38,8 @@ export default function DashboardPage() {
     }
   }
 
-  // In this example, "Switch Account" is implemented as a logout.
-  const handleSwitchAccount = () => {
+  // "Add Another Account" will simply log out the user so they can log in with a different account.
+  const handleAddAnotherAccount = () => {
     handleLogout()
   }
 
@@ -58,8 +65,8 @@ export default function DashboardPage() {
                 <button onClick={handleLogout} className="text-left hover:underline">
                   Logout
                 </button>
-                <button onClick={handleSwitchAccount} className="text-left hover:underline">
-                  Switch Account
+                <button onClick={handleAddAnotherAccount} className="text-left hover:underline">
+                  Add Another Account
                 </button>
               </div>
             </PopoverContent>

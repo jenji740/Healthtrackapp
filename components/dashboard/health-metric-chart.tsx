@@ -12,14 +12,12 @@ import {
   Tooltip,
   Legend,
   Filler,
-  ChartDataset,
 } from "chart.js"
 
 // Register ChartJS components
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler)
 
-// Generate mock data for the past 7 days
-const generateMockData = (metric: string) => {
+const generateMockData = (metric: string, goal: number | null) => {
   const today = new Date()
   const labels = Array.from({ length: 7 }, (_, i) => {
     const date = new Date(today)
@@ -41,52 +39,57 @@ const generateMockData = (metric: string) => {
     case "water":
       data = [1600, 1800, 2100, 1750, 1900, 2000, 1800]
       break
+    case "calories":
+      data = [1950, 2100, 1850, 2200, 1800, 1900, 1850]
+      break
     default:
       data = [0, 0, 0, 0, 0, 0, 0]
   }
 
-  return { labels, data }
+  return { labels, data, goal }
 }
 
-interface HealthMetricChartProps {
-  metric: "steps" | "heartRate" | "sleep" | "water"
+export interface HealthMetricChartProps {
+  metric: string
   color: string
+  goal: number | null
 }
 
-export default function HealthMetricChart({ metric, color }: HealthMetricChartProps) {
+export default function HealthMetricChart({ metric, color, goal }: HealthMetricChartProps) {
   const [chartData, setChartData] = useState<any>(null)
 
   useEffect(() => {
-    const { labels, data } = generateMockData(metric)
+    const { labels, data, goal: targetGoal } = generateMockData(metric, goal)
 
-    const dataset: ChartDataset<"line"> = {
-      label: metric.charAt(0).toUpperCase() + metric.slice(1),
-      data,
-      borderColor: color,
-      backgroundColor: `${color}20`,
-      tension: 0.3,
-      fill: true,
-      borderWidth: 2,
+    const datasets = [
+      {
+        label: metric.charAt(0).toUpperCase() + metric.slice(1),
+        data,
+        borderColor: color,
+        backgroundColor: `${color}20`,
+        tension: 0.3,
+        fill: true,
+      },
+    ]
+
+    // Add goal line if goal exists
+    if (targetGoal) {
+      datasets.push({
+        label: "Goal",
+        data: Array(7).fill(targetGoal),
+        borderColor: "#94a3b8",
+        borderDash: [5, 5],
+        borderWidth: 1,
+        pointRadius: 0,
+        fill: false,
+      } as any)
     }
 
-      const targetGoal = 8000 // or any appropriate goal value
-
-  // Create a goal dataset with a dashed line
-  const goalDataset = {
-    label: "Goal",
-    data: Array(7).fill(targetGoal),
-    borderColor: "#94a3b8",
-    borderDash: [5, 5],  // This property is causing the error
-    borderWidth: 1,
-    pointRadius: 0,
-    fill: false,
-  } as any  // Cast as any to bypass TypeScript's check
-    
     setChartData({
       labels,
-      datasets: [dataset],
+      datasets,
     })
-  }, [metric, color])
+  }, [metric, color, goal])
 
   if (!chartData) return <div>Loading chart...</div>
 
